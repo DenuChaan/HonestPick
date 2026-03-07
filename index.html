@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honest Pick — Curated Finds</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Anton&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<!-- Header -->
+<header id="header">
+  <a href="#" class="logo">
+    <span class="logo-dot"></span>
+    Honest Pick
+  </a>
+  <nav>
+    <a href="#products">Products</a>
+    <a href="#about">About</a>
+    <a href="#picks">Top Picks</a>
+  </nav>
+  <div class="search-wrap" id="searchWrap">
+    <button class="search-toggle" id="searchToggle" onclick="toggleSearch()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+    </button>
+    <div class="search-bar" id="searchBar">
+      <input type="text" placeholder="Search products..." id="searchInput" oninput="searchProducts(this.value)"/>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+  </div>
+
+  <button class="cart-btn" onclick="openCart()">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    Cart
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div class="hero-text">
+      <h1>Things worth <em>buying.</em></h1>
+      <p class="hero-desc">No fluff. No filler. Just handpicked products we actually tested and loved — all sourced directly from AliExpress at honest prices.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+          <span>Explore Picks →</span>
+        </button>
+        <button class="btn-secondary" onclick="openCart()">
+          View Cart
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-img-wrap">
+  <video autoplay muted playsinline
+    style="width:100%;height:100%;object-fit:cover;">
+    <source src="hero.mp4" type="video/mp4">
+  </video>
+</div>
+      </div>
+      <div class="hero-badge">
+        <div class="hero-badge-icon">✓</div>
+        <div class="hero-badge-text">
+          <strong>Verified Finds</strong>
+          Tested & approved
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span>Free Shipping on Orders</span>
+    <span class="highlight">✦ Honest Reviews Only</span>
+    <span>Top Rated Products</span>
+    <span class="highlight">✦ Direct from AliExpress</span>
+    <span>Curated Weekly Picks</span>
+    <span class="highlight">✦ Best Price Guarantee</span>
+    <span>Quality Checked Items</span>
+    <span class="highlight">✦ 500+ Happy Customers</span>
+    <span>Free Shipping on Orders</span>
+    <span class="highlight">✦ Honest Reviews Only</span>
+    <span>Top Rated Products</span>
+    <span class="highlight">✦ Direct from AliExpress</span>
+    <span>Curated Weekly Picks</span>
+    <span class="highlight">✦ Best Price Guarantee</span>
+    <span>Quality Checked Items</span>
+    <span class="highlight">✦ 500+ Happy Customers</span>
+  </div>
+</div>
+
+<!-- Products Section -->
+<section class="products-section" id="products">
+  <div class="section-header" id="sectionHeader">
+    <p class="section-label">Honest Picks</p>
+    <h2>This Week's <em>Favourites</em></h2>
+    <p class="section-sub">Every product is tested or heavily researched. If we wouldn't buy it, we won't list it.</p>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All Items</button>
+    <button class="filter-btn" onclick="filterProducts('tech', this)">Tech & Gadgets</button>
+    <button class="filter-btn" onclick="filterProducts('home', this)">Home & Living</button>
+    <button class="filter-btn" onclick="filterProducts('style', this)">Style</button>
+    <button class="filter-btn" onclick="filterProducts('beauty', this)">Beauty</button>
+    <button class="filter-btn" onclick="filterProducts('outdoor', this)">Outdoor</button>
+  </div>
+
+  <div class="product-grid" id="productGrid">
+    <!-- Products are rendered by JS -->
+  </div>
+</section>
+<!-- Category Slider -->
+<section class="cat-section">
+  <div class="cat-header">
+    <p class="section-label">Browse by Category</p>
+    <div class="cat-nav">
+      <button class="cat-arrow" id="catPrev" onclick="slideCategories(-1)">&#8592;</button>
+      <button class="cat-arrow" id="catNext" onclick="slideCategories(1)">&#8594;</button>
+    </div>
+  </div>
+  <div class="cat-track-wrap">
+    <div class="cat-track" id="catTrack">
+      <div class="cat-card" onclick="filterProducts('tech', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-tech.png" alt="Tech" onerror="this.style.display='none'">
+          <div class="cat-emoji">📱</div>
+        </div>
+        <span class="cat-name">Tech & Gadgets</span>
+        <span class="cat-count">12 items</span>
+      </div>
+      <div class="cat-card" onclick="filterProducts('home', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-home.png" alt="Home" onerror="this.style.display='none'">
+          <div class="cat-emoji">🏠</div>
+        </div>
+        <span class="cat-name">Home & Living</span>
+        <span class="cat-count">8 items</span>
+      </div>
+      <div class="cat-card" onclick="filterProducts('style', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-style.png" alt="Style" onerror="this.style.display='none'">
+          <div class="cat-emoji">👜</div>
+        </div>
+        <span class="cat-name">Style</span>
+        <span class="cat-count">15 items</span>
+      </div>
+      <div class="cat-card" onclick="filterProducts('beauty', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-beauty.png" alt="Beauty" onerror="this.style.display='none'">
+          <div class="cat-emoji">✨</div>
+        </div>
+        <span class="cat-name">Beauty</span>
+        <span class="cat-count">10 items</span>
+      </div>
+      <div class="cat-card" onclick="filterProducts('outdoor', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-outdoor.png" alt="Outdoor" onerror="this.style.display='none'">
+          <div class="cat-emoji">🏕️</div>
+        </div>
+        <span class="cat-name">Outdoor</span>
+        <span class="cat-count">6 items</span>
+      </div>
+      <div class="cat-card" onclick="filterProducts('all', null)">
+        <div class="cat-img-wrap">
+          <img src="cat-all.png" alt="All" onerror="this.style.display='none'">
+          <div class="cat-emoji">🛍️</div>
+        </div>
+        <span class="cat-name">All Items</span>
+        <span class="cat-count">51 items</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Strip -->
+<div class="features-strip" id="about">
+  <div class="feature-item reveal">
+    <div class="feature-icon">🔍</div>
+    <div class="feature-title">Honestly Tested</div>
+    <div class="feature-desc">Every pick goes through real-world testing before it makes our list.</div>
+  </div>
+  <div class="feature-item reveal" style="transition-delay:0.1s">
+    <div class="feature-icon">💰</div>
+    <div class="feature-title">Real Price</div>
+    <div class="feature-desc">Linked directly to AliExpress — no hidden markups.</div>
+  </div>
+  <div class="feature-item reveal" style="transition-delay:0.2s">
+    <div class="feature-icon">⭐</div>
+    <div class="feature-title">Top Rated</div>
+    <div class="feature-desc">Only products with proven track records make the cut.</div>
+  </div>
+  <div class="feature-item reveal" style="transition-delay:0.3s">
+    <div class="feature-icon">🚀</div>
+    <div class="feature-title">Weekly Updates</div>
+    <div class="feature-desc">Fresh finds added every week so you never miss a deal.</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo"><span class="logo-dot"></span>Honest Pick</a>
+      <p>Curated finds from AliExpress, tested and loved. We make affiliate income when you click through — and we only pick things we actually stand behind.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Browse</h4>
+      <a href="#">All Products</a>
+      <a href="#">Tech Picks</a>
+      <a href="#">Home Finds</a>
+      <a href="#">Style Picks</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">How It Works</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Affiliate Disclosure</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Honest Pick. Built with ♥</span>
+    <span>Affiliate links may earn us a commission.</span>
+  </div>
+</footer>
+
+<!-- Cart Overlay & Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <span class="cart-empty-icon">🛒</span>
+      <p>Your cart is empty</p>
+      <small>Add something beautiful</small>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-summary">
+      <div class="cart-summary-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+      <div class="cart-summary-row"><span>Shipping</span><span style="color:var(--sage)">Free</span></div>
+      <div class="cart-summary-row total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    </div>
+    <button class="checkout-btn"><span>Proceed to AliExpress →</span></button>
+    <p class="checkout-note">🔗 You'll be redirected to AliExpress to complete purchase</p>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const products = [
+  {
+    id: 1,
+    name: "Automatic Garment Iron Machine",
+    category: "tech",
+    categoryLabel: "Tech & Gadgets",
+    desc: "Kills the germ and bacteria, remove bad smell, refreshes garments",
+    price: 89.99,
+    oldPrice: 110.00,
+    rating: 4.7,
+    reviews: 2341,
+    badge: "hot",
+    badgeLabel: "Hot",
+    aliLink: "https://s.click.aliexpress.com/e/_c2vJmTux",
+    image: "image1.png"
+  },
+  {
+    id: 2,
+    name: "Linen Throw Pillow Set",
+    category: "home",
+    categoryLabel: "Home & Living",
+    desc: "Stonewashed linen covers in earthy tones. Pairs beautifully with any sofa.",
+    price: 22.50,
+    oldPrice: null,
+    rating: 4.9,
+    reviews: 1876,
+    badge: "pick",
+    badgeLabel: "Top Pick",
+    aliLink: "https://www.aliexpress.com/",
+    image: "image 2.png"
+  },
+  {
+    id: 3,
+    name: "Minimalist Leather Wallet",
+    category: "style",
+    categoryLabel: "Style",
+    desc: "RFID-blocking slim cardholder. Holds 8 cards and some cash — nothing more needed.",
+    price: 12.99,
+    oldPrice: 25.00,
+    rating: 4.6,
+    reviews: 5102,
+    badge: "sale",
+    badgeLabel: "Sale",
+    aliLink: "https://www.aliexpress.com/",
+    image: "image 3.png"
+  },
+  {
+    id: 4,
+    name: "Bamboo Skincare Set",
+    category: "beauty",
+    categoryLabel: "Beauty",
+    desc: "Reusable facial rounds and a bamboo tray. Sustainable swap that actually works.",
+    price: 9.80,
+    oldPrice: null,
+    rating: 4.8,
+    reviews: 3217,
+    badge: "new",
+    badgeLabel: "New",
+    aliLink: "https://www.aliexpress.com/",
+    image: "image 4.png"
+  },
+  {
+    id: 5,
+    name: "Portable Bluetooth Speaker",
+    category: "tech",
+    categoryLabel: "Tech & Gadgets",
+    desc: "IPX7 waterproof, 20hr battery, surprisingly punchy bass for its size.",
+    price: 29.99,
+    oldPrice: 55.00,
+    rating: 4.5,
+    reviews: 8943,
+    badge: "hot",
+    badgeLabel: "Hot",
+    aliLink: "https://www.aliexpress.com/",
+    image: "image 5.png"
+  },
+  {
+    id: 6,
+    name: "Canvas Tote Bag",
+    category: "style",
+    categoryLabel: "Style",
+    desc: "Heavy-duty 12oz canvas with inner pocket. The only bag you'll reach for every day.",
+    price: 8.50,
+    oldPrice: null,
+    rating: 4.9,
+    reviews: 12007,
+    badge: "pick",
+    badgeLabel: "Top Pick",
+    aliLink: "https://www.aliexpress.com/",
+    image: "image 6.png"
+  }
+];
+
+// ── CART STATE ────────────────────────────────────────────────────────
+let cart = [];
+
+// ── RENDER PRODUCTS ──────────────────────────────────────────────────
+function renderProducts(filter = 'all') {
+  const grid = document.getElementById('productGrid');
+  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+  
+  grid.innerHTML = filtered.map((p, i) => {
+    const stars = renderStars(p.rating);
+    const badgeClass = `badge-${p.badge}`;
+    const imgContent = renderImageContent(p.image, p.name);
+    
+    return `
+    <div class="product-card" data-id="${p.id}" style="transition-delay: ${i * 0.08}s">
+      <div class="card-img-wrap">
+        ${imgContent}
+        <span class="card-badge ${badgeClass}">${p.badgeLabel}</span>
+        <button class="card-wishlist" onclick="toggleWishlist(this)" title="Save">♡</button>
+      </div>
+      <div class="card-body">
+        <p class="card-category">${p.categoryLabel}</p>
+        <h3 class="card-title">${p.name}</h3>
+        <p class="card-desc">${p.desc}</p>
+        <div class="card-rating">
+          <div class="stars">${stars}</div>
+          <span class="rating-count">${p.rating} (${p.reviews.toLocaleString()})</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-price">
+            <span class="price-main">$${p.price.toFixed(2)}</span>
+            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice.toFixed(2)}</span>` : ''}
+          </div>
+          <div class="card-actions">
+            <a href="${p.aliLink}" target="_blank" class="btn-aliexpress" title="View on AliExpress">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14l-4-4 1.41-1.41L11 13.17l6.59-6.59L19 8l-8 8z"/></svg>
+              View on AliExpress
+            </a>
+            <button class="btn-add-cart" onclick="addToCart(${p.id})" title="Add to cart">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Trigger animations
+  setTimeout(() => {
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.classList.add('visible');
+    });
+  }, 60);
+}
+
+function renderImageContent(imageName, altText) {
+  // Check if imageName is provided and try to load it
+  if (imageName) {
+    return `
+      <img src="${imageName}" alt="${altText}" 
+        onerror="this.parentNode.innerHTML='${getPlaceholderHTML(altText).replace(/'/g,"&#39;")}'">
+    `;
+  }
+  return getPlaceholderHTML(altText);
+}
+
+function getPlaceholderHTML(altText) {
+  const emojis = ['🛍️','🏠','👜','✨','🎵','🎒'];
+  const idx = Math.abs(altText.charCodeAt(0)) % emojis.length;
+  return `<div class="img-placeholder">
+    <span class="placeholder-icon">${emojis[idx]}</span>
+    <span class="placeholder-label">${altText.substring(0,20)}</span>
+  </div>`;
+}
+
+function renderStars(rating) {
+  return Array.from({length: 5}, (_, i) => {
+    const full = i < Math.floor(rating);
+    return `<span class="star ${full ? '' : 'empty'}">★</span>`;
+  }).join('');
+}
+
+// ── FILTER ───────────────────────────────────────────────────────────
+function filterProducts(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.classList.remove('visible');
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(16px)';
+  });
+  setTimeout(() => renderProducts(filter), 200);
+}
+
+// ── CART ─────────────────────────────────────────────────────────────
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+
+  updateCartUI();
+  showToast(`"${product.name}" added to cart!`);
+
+  // Animate button
+  const btn = document.querySelector(`[data-id="${id}"] .btn-add-cart`);
+  if (btn) {
+    btn.classList.add('added');
+    btn.textContent = '✓';
+    setTimeout(() => { btn.classList.remove('added'); btn.textContent = '+'; }, 1200);
+  }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+  renderCartItems();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  updateCartUI();
+  renderCartItems();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cartCount').textContent = total;
+
+  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+  document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
+
+  document.getElementById('cartFooter').style.display = cart.length ? 'block' : 'none';
+  document.getElementById('cartEmpty').style.display = cart.length ? 'none' : 'flex';
+  renderCartItems();
+}
+
+function renderCartItems() {
+  const container = document.getElementById('cartItems');
+  const emptyEl = document.getElementById('cartEmpty');
+  
+  const existingItems = container.querySelectorAll('.cart-item');
+  existingItems.forEach(el => el.remove());
+
+  cart.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <div class="cart-item-img">
+        <img src="${item.image}" alt="${item.name}" 
+          onerror="this.parentNode.innerHTML='<div class=\\'img-placeholder\\'><span class=\\'placeholder-icon\\'>🛍️</span></div>'">
+      </div>
+      <div class="cart-item-info">
+        <p class="cart-item-category">${item.categoryLabel}</p>
+        <p class="cart-item-name">${item.name}</p>
+        <div class="cart-item-controls">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-display">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, +1)">+</button>
+          </div>
+          <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</span>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">Remove</button>
+      </div>
+    `;
+    container.insertBefore(div, emptyEl);
+  });
+}
+
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// ── WISHLIST ─────────────────────────────────────────────────────────
+function toggleWishlist(btn) {
+  btn.classList.toggle('liked');
+  btn.textContent = btn.classList.contains('liked') ? '♥' : '♡';
+}
+
+// ── CURSOR ───────────────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+});
+
+function animateRing() {
+  rx += (mx - rx - 18) * 0.12;
+  ry += (my - ry - 18) * 0.12;
+  ring.style.transform = `translate(${rx}px, ${ry}px)`;
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .product-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; ring.style.opacity = '0.25'; });
+  el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; ring.style.opacity = '0.5'; });
+});
+
+// ── SCROLL ───────────────────────────────────────────────────────────
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 40);
+
+  // Reveal elements
+  document.querySelectorAll('.section-header, .filter-bar, .reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.88) el.classList.add('visible');
+  });
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderProducts();
+
+// Initial scroll check
+setTimeout(() => {
+  document.querySelectorAll('.section-header, .filter-bar').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.95) el.classList.add('visible');
+  });
+}, 200);
+</script>
+
+<script>
+function toggleSearch() {
+  const bar = document.getElementById('searchBar');
+  const toggle = document.getElementById('searchToggle');
+  bar.classList.toggle('open');
+  toggle.classList.toggle('active');
+  if (bar.classList.contains('open')) {
+    setTimeout(() => document.getElementById('searchInput').focus(), 300);
+  }
+}
+
+function searchProducts(query) {
+  const suggestions = document.getElementById('searchSuggestions');
+  if (query.length < 1) {
+    suggestions.classList.remove('open');
+    suggestions.innerHTML = '';
+    return;
+  }
+  const matches = products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase()) ||
+    p.categoryLabel.toLowerCase().includes(query.toLowerCase()) ||
+    p.desc.toLowerCase().includes(query.toLowerCase())
+  );
+  if (matches.length === 0) {
+    suggestions.innerHTML = '<div class="no-results">😕 No results found</div>';
+    suggestions.classList.add('open');
+    return;
+  }
+  suggestions.innerHTML = matches.map(p => {
+    const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    const highlighted = p.name.replace(regex, '<span class="suggestion-highlight">$1</span>');
+    return '<div class="suggestion-item" onclick="selectProduct(' + p.id + ')">' +
+      '<span class="suggestion-icon">🔍</span>' +
+      '<div><div>' + highlighted + '</div>' +
+      '<div style="font-size:11px;color:var(--light-mid);margin-top:2px">' + p.categoryLabel + ' · $' + p.price + '</div>' +
+      '</div></div>';
+  }).join('');
+  suggestions.classList.add('open');
+}
+
+function selectProduct(id) {
+  const card = document.querySelector('[data-id="' + id + '"]');
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.style.boxShadow = '0 0 0 3px var(--terracotta)';
+    setTimeout(() => card.style.boxShadow = '', 2000);
+  }
+  document.getElementById('searchSuggestions').classList.remove('open');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchBar').classList.remove('open');
+  document.getElementById('searchToggle').classList.remove('active');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) {
+    const s = document.getElementById('searchSuggestions');
+    if (s) s.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('searchCheck').checked = false;
+    const s = document.getElementById('searchSuggestions');
+    if (s) { s.classList.remove('open'); s.innerHTML = ''; }
+  }
+});
+</script>
+
+</body>
+</html>
